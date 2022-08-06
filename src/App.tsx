@@ -1,57 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import { Counter } from './features/counter/Counter';
-import './App.css';
+import "./App.css";
+import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import { LoginCallback, SecureRoute, Security } from "@okta/okta-react";
+import Home from "./components/home";
+import Dashboard from "./components/dashboard";
+import { useCallback } from "react";
+
+const oktaAuth = new OktaAuth({
+  issuer: process.env.REACT_APP_OKTA_ISSUER,
+  clientId: process.env.REACT_APP_OKTA_CLIENTID,
+  redirectUri: process.env.REACT_APP_OKTA_BASE_REDIRECT_URI + "/login/callback",
+});
 
 function App() {
+  const restoreOriginalUri = useCallback(
+    async (_oktaAuth: OktaAuth, originalUri: string) => {
+      window.location.replace(
+        toRelativeUrl(originalUri || "/", window.location.origin)
+      );
+    },
+    []
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <Counter />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <span>
-          <span>Learn </span>
-          <a
-            className="App-link"
-            href="https://reactjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux
-          </a>
-          <span>, </span>
-          <a
-            className="App-link"
-            href="https://redux-toolkit.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Redux Toolkit
-          </a>
-          ,<span> and </span>
-          <a
-            className="App-link"
-            href="https://react-redux.js.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            React Redux
-          </a>
-        </span>
-      </header>
-    </div>
+    <Router>
+      <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
+        <Route path="/" exact={true} component={Home} />
+        <SecureRoute
+          path="/dashboard"
+          exact={true}
+          component={() => <Dashboard />}
+        />
+        <Route path="/login/callback" component={LoginCallback} />
+      </Security>
+    </Router>
   );
 }
 
