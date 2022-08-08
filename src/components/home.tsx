@@ -1,13 +1,25 @@
 import { useOktaAuth } from "@okta/okta-react";
-import { useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Redirect } from "react-router-dom";
-import { setUserProfile } from "../redux-state/dashboardSlice";
+import {
+  IUserProfileExtra,
+  setUserProfile,
+} from "../redux-state/dashboardSlice";
 import "../App.css";
+import Dashboard from "./dashboard";
+
+const emptyUserContext = {
+  fav_color: "",
+  preferred_username: "",
+  locale: "",
+};
+
+export const UserContext = createContext(emptyUserContext);
 
 export default function Home() {
   const dispatch = useDispatch();
   const { oktaAuth, authState } = useOktaAuth();
+  const [userProfileExtra, setUserProfileExtra] = useState<IUserProfileExtra>();
 
   const login = async () => oktaAuth.signInWithRedirect();
 
@@ -15,13 +27,19 @@ export default function Home() {
     if (authState?.isAuthenticated) {
       oktaAuth
         .getUser()
-        .then((info) => {
+        .then((userInfo: any) => {
           dispatch(
             setUserProfile({
               type: "userProfile/userProfileSet",
-              payload: info,
+              payload: userInfo,
             })
           );
+
+          setUserProfileExtra({
+            fav_color: userInfo.fav_color,
+            locale: userInfo.locale,
+            preferred_username: userInfo.preferred_username,
+          });
         })
         .catch((err) => {
           console.error(err);
@@ -29,8 +47,12 @@ export default function Home() {
     }
   }, [authState?.isAuthenticated, dispatch, oktaAuth]);
 
+  console.log({ userProfileExtra });
+
   return authState?.isAuthenticated ? (
-    <Redirect to="/Dashboard" />
+    <UserContext.Provider value={userProfileExtra || emptyUserContext}>
+      <Dashboard />
+    </UserContext.Provider>
   ) : (
     <div className="section-wrapper">
       <div className="title">Using React, Redux, and Okta</div>

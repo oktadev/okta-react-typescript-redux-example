@@ -1,9 +1,8 @@
 import "./App.css";
 import { OktaAuth, toRelativeUrl } from "@okta/okta-auth-js";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import { LoginCallback, SecureRoute, Security } from "@okta/okta-react";
+import { LoginCallback, Security } from "@okta/okta-react";
 import Home from "./components/home";
-import Dashboard from "./components/dashboard";
 import { useCallback } from "react";
 
 const oktaAuth = new OktaAuth({
@@ -26,11 +25,6 @@ function App() {
     <Router>
       <Security oktaAuth={oktaAuth} restoreOriginalUri={restoreOriginalUri}>
         <Route path="/" exact={true} component={Home} />
-        <SecureRoute
-          path="/dashboard"
-          exact={true}
-          component={() => <Dashboard />}
-        />
         <Route path="/login/callback" component={LoginCallback} />
       </Security>
     </Router>

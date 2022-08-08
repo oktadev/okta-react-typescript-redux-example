@@ -3,6 +3,8 @@ import { useSelector } from "react-redux";
 import { selectUserProfile } from "../redux-state/dashboardSlice";
 import "../App.css";
 import { useState } from "react";
+import UserProfile from "./userProfile";
+import UserProfileExtra from "./userProfileExtra";
 
 export default function Dashboard() {
   const { oktaAuth } = useOktaAuth();
@@ -18,26 +20,8 @@ export default function Dashboard() {
       <div className="profile-more-wrapper">
         {isExpanded && (
           <>
-            <div>
-              <span>Username: </span>
-              {userProfile.preferred_username}
-            </div>
-            <div>
-              <span>Email: </span>
-              {userProfile.email}
-            </div>
-            <div>
-              <span>Last name: </span>
-              {userProfile.family_name}
-            </div>
-            <div>
-              <span>Favorite color: </span>
-              {userProfile.fav_color}
-            </div>
-            <div>
-              <span>Locale: </span>
-              {userProfile.locale}
-            </div>
+            <UserProfile />
+            <UserProfileExtra />
           </>
         )}
       </div>

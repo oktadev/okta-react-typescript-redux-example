@@ -1,21 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
 
-export interface UserProfileState {
+export interface IUserProfile {
   email: string;
-  fav_color: string;
   given_name: string;
-  preferred_username: string;
-  locale: string;
   family_name: string;
 }
 
-const initialState: UserProfileState = {
+export interface IUserProfileExtra {
+  fav_color: string;
+  preferred_username: string;
+  locale: string;
+}
+
+const initialState: IUserProfile = {
   email: "",
-  fav_color: "",
   given_name: "",
-  preferred_username: "",
-  locale: "",
   family_name: "",
 };
 
@@ -25,18 +25,15 @@ export const userProfileSlice = createSlice({
   reducers: {
     setUserProfile: (state, action) => {
       return {
-        email: action.payload.email,
-        given_name: action.payload.given_name,
-        fav_color: action.payload.fav_color,
-        preferred_username: action.payload.preferred_username,
-        locale: action.payload.locale,
-        family_name: action.payload.family_name,
+        email: action.payload.payload.email,
+        given_name: action.payload.payload.given_name,
+        family_name: action.payload.payload.family_name,
       };
     },
   },
 });
 
-export const selectUserProfile = (state: RootState): UserProfileState =>
+export const selectUserProfile = (state: RootState): IUserProfile =>
   state.userProfile;
 
 export const { setUserProfile } = userProfileSlice.actions;
