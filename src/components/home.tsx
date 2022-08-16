@@ -1,25 +1,24 @@
 import { useOktaAuth } from "@okta/okta-react";
 import { createContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import {
-  IUserProfileExtra,
-  setUserProfile,
-} from "../redux-state/dashboardSlice";
+import { setUserProfile } from "../redux-state/dashboardSlice";
 import "../App.css";
 import Dashboard from "./dashboard";
+import { UserClaims } from "@okta/okta-auth-js";
+
+type UserProfileExtra = Pick<UserClaims, "locale" | "preferred_username">;
 
 const emptyUserContext = {
-  fav_color: "",
   preferred_username: "",
   locale: "",
-};
+} as UserProfileExtra;
 
 export const UserContext = createContext(emptyUserContext);
 
 export default function Home() {
   const dispatch = useDispatch();
   const { oktaAuth, authState } = useOktaAuth();
-  const [userProfileExtra, setUserProfileExtra] = useState<IUserProfileExtra>();
+  const [userProfileExtra, setUserProfileExtra] = useState<UserProfileExtra>();
 
   const login = async () => oktaAuth.signInWithRedirect();
 
@@ -27,7 +26,8 @@ export default function Home() {
     if (authState?.isAuthenticated) {
       oktaAuth
         .getUser()
-        .then((userInfo: any) => {
+        .then((userInfo: UserProfileExtra) => {
+
           dispatch(
             setUserProfile({
               type: "userProfile/userProfileSet",
@@ -36,7 +36,6 @@ export default function Home() {
           );
 
           setUserProfileExtra({
-            fav_color: userInfo.fav_color,
             locale: userInfo.locale,
             preferred_username: userInfo.preferred_username,
           });
@@ -47,10 +46,8 @@ export default function Home() {
     }
   }, [authState?.isAuthenticated, dispatch, oktaAuth]);
 
-  console.log({ userProfileExtra });
-
-  return authState?.isAuthenticated ? (
-    <UserContext.Provider value={userProfileExtra || emptyUserContext}>
+  return (authState?.isAuthenticated && userProfileExtra) ? (
+    <UserContext.Provider value={userProfileExtra}>
       <Dashboard />
     </UserContext.Provider>
   ) : (

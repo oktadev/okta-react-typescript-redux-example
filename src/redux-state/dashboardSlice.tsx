@@ -7,12 +7,6 @@ export interface IUserProfile {
   family_name: string;
 }
 
-export interface IUserProfileExtra {
-  fav_color: string;
-  preferred_username: string;
-  locale: string;
-}
-
 const initialState: IUserProfile = {
   email: "",
   given_name: "",
