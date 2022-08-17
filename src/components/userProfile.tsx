@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { selectUserProfile } from "../redux-state/dashboardSlice";
+import { selectUserProfile } from "../redux-state/userProfileSlice";
 import "../App.css";
 
 export default function UserProfile() {

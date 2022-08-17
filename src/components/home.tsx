@@ -1,7 +1,7 @@
 import { useOktaAuth } from "@okta/okta-react";
 import { createContext, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { setUserProfile } from "../redux-state/dashboardSlice";
+import { setUserProfile } from "../redux-state/userProfileSlice";
 import "../App.css";
 import Dashboard from "./dashboard";
 import { UserClaims } from "@okta/okta-auth-js";
@@ -52,7 +52,7 @@ export default function Home() {
     </UserContext.Provider>
   ) : (
     <div className="section-wrapper">
-      <div className="title">Using React, Redux, and Okta</div>
+      <div className="title">Use Redux to Manage Authenticated State in a React App</div>
       <button className="button" onClick={login}>
         Login
       </button>

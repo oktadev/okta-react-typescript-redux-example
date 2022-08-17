@@ -5,13 +5,13 @@ import { LoginCallback, Security } from "@okta/okta-react";
 import Home from "./components/home";
 import { useCallback } from "react";
 
-const oktaAuth = new OktaAuth({
-  issuer: process.env.REACT_APP_OKTA_ISSUER,
-  clientId: process.env.REACT_APP_OKTA_CLIENTID,
-  redirectUri: process.env.REACT_APP_OKTA_BASE_REDIRECT_URI + "/login/callback",
-});
-
 function App() {
+  const oktaAuth = new OktaAuth({
+    issuer: process.env.REACT_APP_OKTA_ISSUER,
+    clientId: process.env.REACT_APP_OKTA_CLIENTID,
+    redirectUri: process.env.REACT_APP_OKTA_BASE_REDIRECT_URI + "/login/callback",
+  });
+
   const restoreOriginalUri = useCallback(
     async (_oktaAuth: OktaAuth, originalUri: string) => {
       window.location.replace(

@@ -1,6 +1,6 @@
 import { useOktaAuth } from "@okta/okta-react";
 import { useSelector } from "react-redux";
-import { selectUserProfile } from "../redux-state/dashboardSlice";
+import { selectUserProfile } from "../redux-state/userProfileSlice";
 import "../App.css";
 import { useState } from "react";
 import UserProfile from "./userProfile";
